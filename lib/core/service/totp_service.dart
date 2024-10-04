@@ -34,7 +34,10 @@ class TotpService {
     final Uint8List secretBytes = _totpHelper.base32StringToBytes(base32Seed);
     final timeStepBytes = ByteData(8)..setInt64(0, timeStep);
 
+    // Initialize our hmac given sha256 and secret key, which is base32Seed
     final Hmac hmac = Hmac(sha256, secretBytes);
+
+    // Get the hmac result from the time step, which verifies the time step
     final List<int> hmacResult = hmac.convert(timeStepBytes.buffer.asUint8List()).bytes;
 
     return hmacResult;
