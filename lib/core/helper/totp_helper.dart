@@ -26,4 +26,9 @@ class TotpHelper {
   Uint8List base32StringToBytes(String string) {
     return utf8.encode(string);
   }
+
+  bool isNumericString(String str) {
+    final pattern = RegExp(r'^\d+$');
+    return pattern.hasMatch(str);
+  }
 }

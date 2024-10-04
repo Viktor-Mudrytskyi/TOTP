@@ -41,5 +41,18 @@ void main() {
 
     final hmac = totpService.calculateSha256Hmac(encoded);
     debugPrint('hmac: $hmac');
+
+    // Length of sha256 hash
+    expect(hmac.length, 32);
+  });
+
+  test('getTotp', () {
+    final bytes = totpHelper.generate160Bits();
+    final base32Seed = totpHelper.base32FromBytes(bytes);
+
+    final totp = totpService.getTotp(base32Seed);
+    expect(totp.length, 6);
+    expect(totpHelper.isNumericString(totp), true);
+    debugPrint('totp: $totp');
   });
 }
