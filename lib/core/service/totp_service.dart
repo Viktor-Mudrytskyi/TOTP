@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
@@ -9,6 +10,7 @@ class TotpService {
   final TotpHelper _totpHelper;
 
   static const int _secondsInterval = 30;
+  static const int _codeLength = 6;
 
   int get timeStep {
     return DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ _secondsInterval;
@@ -23,8 +25,8 @@ class TotpService {
         ((hmacRes[offset + 2] & 0xFF) << 8) |
         (hmacRes[offset + 3] & 0xFF);
 
-    // Get the final 6-digit code
-    final code = truncatedHash % 1000000;
+    // Get the final [_codeLength]-digit code
+    final code = truncatedHash % pow(10, _codeLength);
 
     // Convert to string and pad with leading zeros if necessary
     return code.toString().padLeft(6, '0');
