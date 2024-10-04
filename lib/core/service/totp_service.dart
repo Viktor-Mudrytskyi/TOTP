@@ -29,7 +29,7 @@ class TotpService {
     final code = truncatedHash % pow(10, _codeLength);
 
     // Convert to string and pad with leading zeros if necessary
-    return code.toString().padLeft(6, '0');
+    return code.toString().padLeft(_codeLength, '0');
   }
 
   List<int> calculateSha256Hmac(String base32Seed) {
