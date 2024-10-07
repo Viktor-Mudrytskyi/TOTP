@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:totp_authenticator/core/core.dart';
+import 'package:totp_authenticator/view/codes/screens/codes_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initDI();
   runApp(const MainApp());
 }
 
@@ -10,11 +15,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: CodesScreen(),
     );
   }
 }
