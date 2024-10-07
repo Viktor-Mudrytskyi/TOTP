@@ -1,21 +1,46 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:totp_authenticator/core/core.dart';
 import 'package:totp_authenticator/view/view.dart';
 
-class CodeTile extends StatefulWidget {
-  const CodeTile({super.key, required this.model});
+class CodeTile extends StatelessWidget {
+  const CodeTile({super.key, required this.seedData});
+  final SeedData seedData;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => getIt<SingleCodeProvider>()..init(seedData),
+      builder: (context, _) {
+        return Consumer<SingleCodeProvider>(
+          builder: (context, value, child) {
+            return CodeTileBody(
+              model: value.codeModel,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class CodeTileBody extends StatefulWidget {
+  const CodeTileBody({super.key, required this.model});
   final CodeModel model;
 
   @override
-  State<CodeTile> createState() => _CodeTileState();
+  State<CodeTileBody> createState() => _CodeTileBodyState();
 }
 
-class _CodeTileState extends State<CodeTile> with SingleTickerProviderStateMixin {
+class _CodeTileBodyState extends State<CodeTileBody> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: widget.model.refreshRate);
-    _controller.value = widget.model.initialFractionValue;
+    _controller = AnimationController(vsync: this, duration: widget.model.refreshRate)
+      ..repeat()
+      ..value = widget.model.initialFractionValue
+      ..forward();
     super.initState();
   }
 
@@ -33,13 +58,22 @@ class _CodeTileState extends State<CodeTile> with SingleTickerProviderStateMixin
         children: [
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.model.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                Text(widget.model.code),
+                Text(
+                  widget.model.code,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
               ],
             ),
           ),

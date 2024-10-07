@@ -28,25 +28,20 @@ class CodesScreen extends StatelessWidget {
                   child: Text('No seeds yet...'),
                 );
               }
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  return CodeTile(
-                    model: CodeModel(
-                      title: value.seeds[index].title,
-                      code: value.seeds[index].base32Seed,
-                      refreshRate: const Duration(seconds: 30),
-                      initialFractionValue: 0.1,
-                      base32Seed: value.seeds[index].base32Seed,
-                    ),
-                  );
-                },
-                itemCount: value.seeds.length,
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    height: 1,
-                    thickness: 1,
-                  );
-                },
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    return CodeTile(seedData: value.seeds[index]);
+                  },
+                  itemCount: value.seeds.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      height: 1,
+                      thickness: 1,
+                    );
+                  },
+                ),
               );
             },
           ),

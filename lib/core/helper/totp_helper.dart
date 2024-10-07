@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
 
-class TotpHelper {
+mixin class TotpHelper {
   Uint8List generate160Bits([int bytesLength = 20]) {
     final Random random = Random();
     final List<int> bytes = List.generate(bytesLength, (_) => random.nextInt(256));

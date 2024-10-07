@@ -3,31 +3,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:totp_authenticator/core/core.dart';
 
 void main() {
-  late final TotpHelper totpHelper;
   late final TotpService totpService;
   setUpAll(() async {
     await initDI();
-    totpHelper = getIt();
     totpService = getIt();
   });
 
   test('Base32 encoding, decoding', () {
-    final bytes = totpHelper.generate160Bits();
+    final bytes = totpService.generate160Bits();
     expect(bytes.length, 20);
 
-    final encoded = totpHelper.base32FromBytes(bytes);
+    final encoded = totpService.base32FromBytes(bytes);
     debugPrint('encoded: $encoded');
-    final decoded = totpHelper.base32DecodeString(encoded);
+    final decoded = totpService.base32DecodeString(encoded);
     debugPrint('decoded: $decoded');
-    final encodeAgain = totpHelper.base32FromString(decoded);
+    final encodeAgain = totpService.base32FromString(decoded);
     debugPrint('encodeAgain: $encodeAgain');
-    final decodeAgain = totpHelper.base32DecodeString(encodeAgain);
+    final decodeAgain = totpService.base32DecodeString(encodeAgain);
     debugPrint('decodeAgain: $decodeAgain');
 
-    final encodedFirstBytes = totpHelper.base32StringToBytes(encoded);
+    final encodedFirstBytes = totpService.base32StringToBytes(encoded);
     debugPrint('encodedFirstBytes: $encodedFirstBytes');
 
-    final encodedSecondBytes = totpHelper.base32StringToBytes(encodeAgain);
+    final encodedSecondBytes = totpService.base32StringToBytes(encodeAgain);
     debugPrint('encodedSecondBytes: $encodedSecondBytes');
 
     expect(encodedFirstBytes, encodedSecondBytes);
@@ -36,8 +34,8 @@ void main() {
   });
 
   test('calculateSha256Hmac', () {
-    final bytes = totpHelper.generate160Bits();
-    final encoded = totpHelper.base32FromBytes(bytes);
+    final bytes = totpService.generate160Bits();
+    final encoded = totpService.base32FromBytes(bytes);
 
     final hmac = totpService.calculateSha256Hmac(encoded);
     debugPrint('hmac: $hmac');
@@ -47,12 +45,12 @@ void main() {
   });
 
   test('getTotp', () {
-    final bytes = totpHelper.generate160Bits();
-    final base32Seed = totpHelper.base32FromBytes(bytes);
+    final bytes = totpService.generate160Bits();
+    final base32Seed = totpService.base32FromBytes(bytes);
 
     final totp = totpService.getTotp(base32Seed);
     expect(totp.length, 6);
-    expect(totpHelper.isNumericString(totp), true);
+    expect(totpService.isNumericString(totp), true);
     debugPrint('totp: $totp');
   });
 }

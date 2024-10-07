@@ -4,10 +4,8 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:totp_authenticator/core/core.dart';
 
-class TotpService {
-  const TotpService({required TotpHelper totpHelper}) : _totpHelper = totpHelper;
-
-  final TotpHelper _totpHelper;
+class TotpService with TotpHelper {
+  const TotpService();
 
   static const int _secondsInterval = 30;
   static const int _codeLength = 6;
@@ -33,7 +31,7 @@ class TotpService {
   }
 
   List<int> calculateSha256Hmac(String base32Seed) {
-    final Uint8List secretBytes = _totpHelper.base32StringToBytes(base32Seed);
+    final Uint8List secretBytes = base32StringToBytes(base32Seed);
     // 8 bytes for int
     final timeStepBytes = ByteData(8)..setInt64(0, timeStep);
 
