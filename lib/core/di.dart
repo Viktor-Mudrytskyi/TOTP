@@ -7,7 +7,7 @@ final GetIt getIt = GetIt.instance;
 Future<void> initDI() async {
   getIt.registerLazySingleton<SecureStorageService>(() => SecureStorageService());
 
-  getIt.registerFactory<TotpService>(() => const TotpService());
+  getIt.registerLazySingleton<TotpService>(() => TotpService());
 
   getIt.registerFactory<CodesProvider>(() => CodesProvider(secureStorageService: getIt()));
 

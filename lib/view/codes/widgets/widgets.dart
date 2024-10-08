@@ -3,4 +3,5 @@
 
 
 export 'add_seed_dialog.dart';
+export 'clock_indicator.dart';
 export 'code_tile.dart';

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -5,10 +6,18 @@ import 'package:crypto/crypto.dart';
 import 'package:totp_authenticator/core/core.dart';
 
 class TotpService with TotpHelper {
-  const TotpService();
+  TotpService() {
+    _secondsSinceEpoch = StreamController<int>.broadcast();
+    _startTimerAtRightTime();
+  }
 
   static const int _secondsInterval = 30;
   static const int _codeLength = 6;
+
+  late final StreamController<int> _secondsSinceEpoch;
+  Stream<int> get secondsSinceEpochStream => _secondsSinceEpoch.stream;
+
+  late final Timer _secondsTimer;
 
   int get timeStep {
     return DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ _secondsInterval;
@@ -42,5 +51,28 @@ class TotpService with TotpHelper {
     final List<int> hmacResult = hmac.convert(timeStepBytes.buffer.asUint8List()).bytes;
 
     return hmacResult;
+  }
+
+  void close() {
+    _secondsSinceEpoch.close();
+    _secondsTimer.cancel();
+  }
+
+  void _startTimerAtRightTime() {
+    final now = DateTime.now();
+
+    final int millisecondsUntilNextSecond = 1000 - now.millisecond;
+
+    Timer(Duration(milliseconds: millisecondsUntilNextSecond), () {
+      _secondsTimer = Timer.periodic(
+        const Duration(seconds: 1),
+        (_) {
+          final int secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+          _secondsSinceEpoch.add(secondsSinceEpoch);
+        },
+      );
+
+      _secondsSinceEpoch.add(DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    });
   }
 }

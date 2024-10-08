@@ -24,61 +24,52 @@ class CodeTile extends StatelessWidget {
   }
 }
 
-class CodeTileBody extends StatefulWidget {
+class CodeTileBody extends StatelessWidget {
   const CodeTileBody({super.key, required this.model});
   final CodeModel model;
 
   @override
-  State<CodeTileBody> createState() => _CodeTileBodyState();
-}
-
-class _CodeTileBodyState extends State<CodeTileBody> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    _controller = AnimationController(vsync: this, duration: widget.model.refreshRate)
-      ..repeat()
-      ..value = widget.model.initialFractionValue
-      ..forward();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.model.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    return Consumer<SingleCodeProvider>(
+      builder: (context, value, child) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      model.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      model.code,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  widget.model.code,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+              ),
+              SizedBox(
+                width: 25,
+                height: 25,
+                child: ClockIndicator(
+                  progress: value.clockFraction,
+                  progressColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Colors.blue,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
