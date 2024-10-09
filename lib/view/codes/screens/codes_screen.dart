@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 import 'package:totp_authenticator/core/core.dart';
 import 'package:totp_authenticator/view/view.dart';
@@ -65,18 +66,53 @@ class CodesScreen extends StatelessWidget {
               );
             },
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showDialog<void>(
-                context: context,
-                builder: (context) => AddSeedDialog(
-                  onAdd: (seed) {
-                    provider.addNewSeed(seedData: seed);
-                  },
-                ),
-              );
-            },
-            child: const Icon(Icons.add),
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: ExpandableFab(
+            openButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(
+                Icons.open_in_browser_outlined,
+                size: 30,
+              ),
+              foregroundColor: Colors.lightBlue,
+              backgroundColor: Colors.white,
+              shape: const CircleBorder(),
+            ),
+            type: ExpandableFabType.up,
+            closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+              child: const Icon(Icons.close),
+              foregroundColor: Colors.red,
+              backgroundColor: Colors.white,
+              shape: const CircleBorder(),
+            ),
+            distance: 70,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AddSeedDialog(
+                      onAdd: (seed) {
+                        provider.addNewSeed(seedData: seed);
+                      },
+                    ),
+                  );
+                },
+                child: const Icon(Icons.edit),
+              ),
+              FloatingActionButton(
+                onPressed: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AddSeedDialog(
+                      onAdd: (seed) {
+                        provider.addNewSeed(seedData: seed);
+                      },
+                    ),
+                  );
+                },
+                child: const Icon(Icons.qr_code),
+              ),
+            ],
           ),
         );
       },
