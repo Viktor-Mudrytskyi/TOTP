@@ -28,20 +28,40 @@ class CodesScreen extends StatelessWidget {
                   child: Text('No seeds yet...'),
                 );
               }
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return CodeTile(seedData: value.seeds[index]);
-                  },
-                  itemCount: value.seeds.length,
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      height: 1,
-                      thickness: 1,
-                    );
-                  },
-                ),
+              return ListView.separated(
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    key: ValueKey(value.seeds[index]),
+                    onDismissed: (_) {
+                      context.read<CodesProvider>().deleteSeed(seedData: value.seeds[index]);
+                    },
+                    confirmDismiss: (_) async {
+                      final bool? response =
+                          await showDialog<bool?>(context: context, builder: (context) => const DeleteDialog());
+                      return response;
+                    },
+                    direction: DismissDirection.endToStart,
+                    background: const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    dismissThresholds: const {DismissDirection.endToStart: 0.4},
+                    child: CodeTile(seedData: value.seeds[index]),
+                  );
+                },
+                itemCount: value.seeds.length,
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                    height: 1,
+                    thickness: 1,
+                  );
+                },
               );
             },
           ),

@@ -5,8 +5,9 @@ import 'package:totp_authenticator/core/core.dart';
 import 'package:totp_authenticator/view/view.dart';
 
 class AddSeedDialog extends StatefulWidget {
-  const AddSeedDialog({super.key, required this.onAdd});
+  const AddSeedDialog({super.key, required this.onAdd, this.title});
   final void Function(SeedData seed) onAdd;
+  final String? title;
 
   @override
   State<AddSeedDialog> createState() => _AddSeedDialogState();
@@ -15,6 +16,14 @@ class AddSeedDialog extends StatefulWidget {
 class _AddSeedDialogState extends State<AddSeedDialog> {
   final _title = TitleValidatable('');
   final _seed = SeedValidatable('');
+
+  @override
+  void initState() {
+    if (widget.title != null) {
+      _title.update(widget.title!);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

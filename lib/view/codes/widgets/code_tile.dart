@@ -12,28 +12,21 @@ class CodeTile extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => getIt<SingleCodeProvider>()..init(seedData),
       builder: (context, _) {
-        return Consumer<SingleCodeProvider>(
-          builder: (context, value, child) {
-            return CodeTileBody(
-              model: value.codeModel,
-            );
-          },
-        );
+        return const CodeTileBody();
       },
     );
   }
 }
 
 class CodeTileBody extends StatelessWidget {
-  const CodeTileBody({super.key, required this.model});
-  final CodeModel model;
+  const CodeTileBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SingleCodeProvider>(
       builder: (context, value, child) {
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           child: Row(
             children: [
               Expanded(
@@ -41,13 +34,13 @@ class CodeTileBody extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      model.title,
+                      value.codeModel.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      model.code,
+                      value.codeModel.code,
                       style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

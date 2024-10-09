@@ -22,12 +22,17 @@ class SingleCodeProvider extends ChangeNotifier {
   void init(SeedData seedData) {
     final code = _totpService.getTotp(seedData.base32Seed);
     _codeModel = CodeModel.fromSeedDataAndCode(seedData: seedData, totpCode: code);
-    _totpService.secondsSinceEpochStream.listen(_updateClock);
+    _secondsSubscription = _totpService.secondsSinceEpochStream.listen(_updateClockAndCheckCode);
     _secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   }
 
-  void _updateClock(int seconds) {
+  void _updateClockAndCheckCode(int seconds) {
     _secondsSinceEpoch = seconds;
+    final shouldUpdateCode = _secondsSinceEpoch % 30 == 0;
+    if (shouldUpdateCode) {
+      final code = _totpService.getTotp(_codeModel.base32Seed);
+      _codeModel = _codeModel.copyWith(code: code);
+    }
     notifyListeners();
   }
 

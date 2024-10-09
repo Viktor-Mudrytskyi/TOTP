@@ -13,6 +13,8 @@ enum PrimaryButtonStyle {
 
   ///Light blue button style
   lightBlue,
+
+  red,
 }
 
 /// Extension on [PrimaryButtonStyle] to provide additional helper methods.
@@ -92,6 +94,12 @@ abstract class PrimaryButtonHandlerStyle {
             Colors.lightBlue,
           ],
         );
+      case PrimaryButtonStyle.red:
+        return const LinearGradient(
+          begin: Alignment(1, 0.01),
+          end: Alignment(-1, -0.01),
+          colors: <Color>[Colors.red, Colors.red],
+        );
     }
   }
 
@@ -118,6 +126,8 @@ abstract class PrimaryButtonHandlerStyle {
         return const TextStyle(color: Colors.grey);
       case PrimaryButtonStyle.lightBlue:
         return const TextStyle(color: Colors.lightBlue);
+      case PrimaryButtonStyle.red:
+        return const TextStyle(color: Colors.white);
     }
   }
 }
