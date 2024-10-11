@@ -5,9 +5,9 @@ import 'package:totp_authenticator/core/core.dart';
 import 'package:totp_authenticator/view/view.dart';
 
 class AddSeedDialog extends StatefulWidget {
-  const AddSeedDialog({super.key, required this.onAdd, this.title});
+  const AddSeedDialog({super.key, required this.onAdd, this.seed});
   final void Function(SeedData seed) onAdd;
-  final String? title;
+  final String? seed;
 
   @override
   State<AddSeedDialog> createState() => _AddSeedDialogState();
@@ -19,8 +19,8 @@ class _AddSeedDialogState extends State<AddSeedDialog> {
 
   @override
   void initState() {
-    if (widget.title != null) {
-      _title.update(widget.title!);
+    if (widget.seed != null) {
+      _seed.update(widget.seed!);
     }
     super.initState();
   }
@@ -57,6 +57,7 @@ class _AddSeedDialogState extends State<AddSeedDialog> {
                     setState(() {});
                   },
                   errorText: _seed.failure?.message,
+                  initialValue: _seed.value,
                 ),
                 const SizedBox(height: 20),
                 AppPrimaryButton(

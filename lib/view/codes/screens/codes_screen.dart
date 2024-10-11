@@ -29,40 +29,45 @@ class CodesScreen extends StatelessWidget {
                   child: Text('No seeds yet...'),
                 );
               }
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: ValueKey(value.seeds[index]),
-                    onDismissed: (_) {
-                      context.read<CodesProvider>().deleteSeed(seedData: value.seeds[index]);
-                    },
-                    confirmDismiss: (_) async {
-                      final bool? response =
-                          await showDialog<bool?>(context: context, builder: (context) => const DeleteDialog());
-                      return response;
-                    },
-                    direction: DismissDirection.endToStart,
-                    background: const Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+              return RefreshIndicator.adaptive(
+                onRefresh: () {
+                  return provider.init();
+                },
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: ValueKey(value.seeds[index]),
+                      onDismissed: (_) {
+                        context.read<CodesProvider>().deleteSeed(seedData: value.seeds[index]);
+                      },
+                      confirmDismiss: (_) async {
+                        final bool? response =
+                            await showDialog<bool?>(context: context, builder: (context) => const DeleteDialog());
+                        return response;
+                      },
+                      direction: DismissDirection.endToStart,
+                      background: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 20),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
-                    ),
-                    dismissThresholds: const {DismissDirection.endToStart: 0.4},
-                    child: CodeTile(seedData: value.seeds[index]),
-                  );
-                },
-                itemCount: value.seeds.length,
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    height: 1,
-                    thickness: 1,
-                  );
-                },
+                      dismissThresholds: const {DismissDirection.endToStart: 0.4},
+                      child: CodeTile(seedData: value.seeds[index]),
+                    );
+                  },
+                  itemCount: value.seeds.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      height: 1,
+                      thickness: 1,
+                    );
+                  },
+                ),
               );
             },
           ),
@@ -87,6 +92,7 @@ class CodesScreen extends StatelessWidget {
             distance: 70,
             children: [
               FloatingActionButton(
+                heroTag: '1',
                 onPressed: () {
                   showDialog<void>(
                     context: context,
@@ -100,13 +106,25 @@ class CodesScreen extends StatelessWidget {
                 child: const Icon(Icons.edit),
               ),
               FloatingActionButton(
+                heroTag: '2',
                 onPressed: () {
-                  showDialog<void>(
-                    context: context,
-                    builder: (context) => AddSeedDialog(
-                      onAdd: (seed) {
-                        provider.addNewSeed(seedData: seed);
-                      },
+                  Navigator.of(context).push(
+                    MaterialPageRoute<dynamic>(
+                      builder: (context) => ScanCodeScreen(
+                        onScaned: (val) {
+                          final data = val.barcodes.firstOrNull;
+                          showDialog<void>(
+                            context: context,
+                            builder: (context) => AddSeedDialog(
+                              //TODO mocked
+                              seed: data?.rawValue.toString(),
+                              onAdd: (seed) {
+                                provider.addNewSeed(seedData: seed);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   );
                 },

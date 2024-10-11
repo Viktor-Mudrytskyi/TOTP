@@ -3,3 +3,4 @@
 
 
 export 'codes_screen.dart';
+export 'scan_code_screen.dart';
