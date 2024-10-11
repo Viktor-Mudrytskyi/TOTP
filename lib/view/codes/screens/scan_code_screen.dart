@@ -68,33 +68,37 @@ class _ScanCodeScreenState extends State<ScanCodeScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constr) {
-        final Size layoutSize = constr.biggest;
+    return OrientationBuilder(
+      builder: (context, _) {
+        return LayoutBuilder(
+          builder: (context, constr) {
+            final Size layoutSize = constr.biggest;
 
-        final double scanWindowWidth = layoutSize.width / 1.8;
-        final double scanWindowHeight = layoutSize.height / 1.8;
+            final double scanWindowWidth = layoutSize.width / 1.8;
+            final double scanWindowHeight = layoutSize.height / 1.8;
 
-        final decidedSide = min(scanWindowHeight, scanWindowWidth);
-        final center = layoutSize.center(Offset.zero);
+            final decidedSide = min(scanWindowHeight, scanWindowWidth);
+            final center = layoutSize.center(Offset.zero);
 
-        final Rect scanWindow = Rect.fromCenter(
-          center: center,
-          width: decidedSide,
-          height: decidedSide,
-        );
-        return MobileScanner(
-          controller: _controller,
-          scanWindow: scanWindow,
-          overlayBuilder: (context, constr2) {
-            return SizedBox(
-              width: layoutSize.width,
-              height: layoutSize.height,
-              child: CustomPaint(
-                painter: RectanglePainter(
-                  rect: scanWindow,
-                ),
-              ),
+            final Rect scanWindow = Rect.fromCenter(
+              center: center,
+              width: decidedSide,
+              height: decidedSide,
+            );
+            return MobileScanner(
+              controller: _controller,
+              scanWindow: scanWindow,
+              overlayBuilder: (context, constr2) {
+                return SizedBox(
+                  width: layoutSize.width,
+                  height: layoutSize.height,
+                  child: CustomPaint(
+                    painter: RectanglePainter(
+                      rect: scanWindow,
+                    ),
+                  ),
+                );
+              },
             );
           },
         );
