@@ -54,8 +54,8 @@ class TotpService with TotpHelper {
   }
 
   void close() {
-    _secondsSinceEpoch.close();
     _secondsTimer.cancel();
+    _secondsSinceEpoch.close();
   }
 
   void _startTimerAtRightTime() {
