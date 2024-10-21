@@ -63,16 +63,19 @@ class TotpService with TotpHelper {
 
     final int millisecondsUntilNextSecond = 1000 - now.millisecond;
 
-    Timer(Duration(milliseconds: millisecondsUntilNextSecond), () {
-      _secondsTimer = Timer.periodic(
-        const Duration(seconds: 1),
-        (_) {
-          final int secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-          _secondsSinceEpoch.add(secondsSinceEpoch);
-        },
-      );
+    Timer(
+      Duration(milliseconds: millisecondsUntilNextSecond),
+      () {
+        _secondsTimer = Timer.periodic(
+          const Duration(seconds: 1),
+          (_) {
+            final int secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+            _secondsSinceEpoch.add(secondsSinceEpoch);
+          },
+        );
 
-      _secondsSinceEpoch.add(DateTime.now().millisecondsSinceEpoch ~/ 1000);
-    });
+        _secondsSinceEpoch.add(DateTime.now().millisecondsSinceEpoch ~/ 1000);
+      },
+    );
   }
 }

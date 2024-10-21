@@ -116,7 +116,6 @@ class CodesScreen extends StatelessWidget {
                           showDialog<void>(
                             context: context,
                             builder: (context) => AddSeedDialog(
-                              //TODO mocked
                               seed: data?.rawValue.toString(),
                               onAdd: (seed) {
                                 provider.addNewSeed(seedData: seed);

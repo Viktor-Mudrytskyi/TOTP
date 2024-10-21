@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:totp/totp.dart';
 import 'package:totp_authenticator/core/core.dart';
 
 void main() {
@@ -52,5 +53,12 @@ void main() {
     expect(totp.length, 6);
     expect(totpService.isNumericString(totp), true);
     debugPrint('totp: $totp');
+  });
+
+  test('Correct generation', () async {
+    const key = 'AAAAAAAAAAAAAAAA';
+    final code = totpService.getTotp(key);
+    final codeFromPack = Totp.fromBase32(secret: key, digits: 6).generate(DateTime.now());
+    expect(code, codeFromPack);
   });
 }
