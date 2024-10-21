@@ -27,6 +27,10 @@ mixin class TotpHelper {
     return utf8.encode(string);
   }
 
+  Uint8List decodeBase32(String base32String) {
+    return base32.decode(base32String);
+  }
+
   bool isNumericString(String str) {
     final pattern = RegExp(r'^\d+$');
     return pattern.hasMatch(str);

@@ -40,11 +40,16 @@ class CodeTileBody extends StatelessWidget {
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      value.codeModel.code,
+                      _formatCode(
+                        value.codeModel.code,
+                      ),
                       style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
+                        fontFeatures: [
+                          FontFeature.tabularFigures(),
+                        ],
                       ),
                     ),
                   ],
@@ -64,5 +69,12 @@ class CodeTileBody extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _formatCode(String code) {
+    if (code.length != 6) {
+      return code;
+    }
+    return '${code.substring(0, 3)} ${code.substring(3, 6)}';
   }
 }

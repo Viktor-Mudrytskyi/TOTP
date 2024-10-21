@@ -20,11 +20,11 @@ class TotpService with TotpHelper {
   late final Timer _secondsTimer;
 
   int get timeStep {
-    return DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ _secondsInterval;
+    return DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000 ~/ _secondsInterval;
   }
 
   String getTotp(String base32Seed) {
-    final hmacRes = calculateSha256Hmac(base32Seed);
+    final hmacRes = calculateSha1Hmac(base32Seed);
     // Extract dynamic offset and truncated hash
     final offset = hmacRes[hmacRes.length - 1] & 0xF;
     final truncatedHash = ((hmacRes[offset] & 0x7F) << 24) |
@@ -39,16 +39,18 @@ class TotpService with TotpHelper {
     return code.toString().padLeft(_codeLength, '0');
   }
 
-  List<int> calculateSha256Hmac(String base32Seed) {
-    final Uint8List secretBytes = base32StringToBytes(base32Seed);
+  // TODO rename func
+  List<int> calculateSha1Hmac(String base32Seed) {
+    final Uint8List secretBytes = decodeBase32(base32Seed);
     // 8 bytes for int
-    final timeStepBytes = ByteData(8)..setInt64(0, timeStep);
+    final timeStepBytesData = ByteData(8)..setInt64(0, timeStep);
+    final timeStepBytes = timeStepBytesData.buffer.asUint8List();
 
-    // Initialize our hmac given sha256 and secret key, which is base32Seed
-    final Hmac hmac = Hmac(sha256, secretBytes);
+    // Initialize our hmac given sha1 and secret key, which is base32Seed
+    final Hmac hmac = Hmac(sha1, secretBytes);
 
     // Get the hmac result from the time step, which verifies the time step
-    final List<int> hmacResult = hmac.convert(timeStepBytes.buffer.asUint8List()).bytes;
+    final List<int> hmacResult = hmac.convert(timeStepBytes).bytes;
 
     return hmacResult;
   }
@@ -59,7 +61,7 @@ class TotpService with TotpHelper {
   }
 
   void _startTimerAtRightTime() {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
 
     final int millisecondsUntilNextSecond = 1000 - now.millisecond;
 
@@ -69,12 +71,12 @@ class TotpService with TotpHelper {
         _secondsTimer = Timer.periodic(
           const Duration(seconds: 1),
           (_) {
-            final int secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+            final int secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
             _secondsSinceEpoch.add(secondsSinceEpoch);
           },
         );
 
-        _secondsSinceEpoch.add(DateTime.now().millisecondsSinceEpoch ~/ 1000);
+        _secondsSinceEpoch.add(DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000);
       },
     );
   }

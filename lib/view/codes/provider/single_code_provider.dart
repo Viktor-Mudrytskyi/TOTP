@@ -23,7 +23,7 @@ class SingleCodeProvider extends ChangeNotifier {
     final code = _totpService.getTotp(seedData.base32Seed);
     _codeModel = CodeModel.fromSeedDataAndCode(seedData: seedData, totpCode: code);
     _secondsSubscription = _totpService.secondsSinceEpochStream.listen(_updateClockAndCheckCode);
-    _secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    _secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
   }
 
   void _updateClockAndCheckCode(int seconds) {
